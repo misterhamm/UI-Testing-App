@@ -24,7 +24,7 @@
     variant="success" 
     size="lg">Save Test
   </b-button>
-  {{ testList }}
+  {{ testPackage }}
 </b-container>
 </template>
 
@@ -42,19 +42,10 @@ export default {
       fixtureName: null,
       testUrl: null,
       testList: [],
+      testPackage: {}
     }
   },
-  // computed:{
-  //   isDisabled(){
-  //     if(){
-  //       isDisabled = false
-  //     }
-
-  //     // return  //&& actionsAreReady()
-  //   },
-  // },
   methods:{
-    
     actionsAreReady(){
       this.testList.forEach(element => {
         element.actions.forEach(el => {
@@ -75,7 +66,12 @@ export default {
       this.testList.push({index: this.testList.length, name: '', actions: []})
     },
     saveTest(){
-      
+      var json = {
+        fixtureName: this.fixtureName,
+        testUrl: this.testUrl,
+        testList: this.testList
+      }
+      console.log(json)
     },
   }
 }
