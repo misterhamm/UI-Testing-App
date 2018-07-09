@@ -3,7 +3,7 @@
   <b-row>
     <b-col>
       <label>Fixture Name</label>
-      <b-form-input class="fixture-name form-control" v-model="fixtureName" placeholder="Fixture name here" type="text"></b-form-input>
+      <b-form-input class="fixture-name form-control" v-model="fixtureName" placeholder="Project Name" type="text"></b-form-input>
     </b-col>
     <b-col>
       <label>Url to Test</label>
@@ -18,7 +18,7 @@
   <test v-for="(test, index) in testList" :key="index" :test="test" v-on:remove-test="removeTest(index)"></test>
 
   <b-button 
-    @click="saveTest" 
+    @click="setupJson" 
     class="save-test" 
     :disabled="this.fixtureName === null && this.testUrl === null && this.testList.length <= 0" 
     variant="success" 
@@ -65,14 +65,19 @@ export default {
     addTest(){
       this.testList.push({index: this.testList.length, name: '', actions: []})
     },
-    saveTest(){
+    setupJson(){
       var json = {
         fixtureName: this.fixtureName,
         testUrl: this.testUrl,
         testList: this.testList
       }
-      console.log(json)
+      //send data to...
+      generateFile(json)
     },
+    generateFile(json){
+      var file = new File(["Hello, world!"], "hello world.txt", {type: "text/plain;charset=utf-8"});
+      saveAs(file);
+    }
   }
 }
 </script>
