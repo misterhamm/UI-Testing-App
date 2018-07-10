@@ -1,12 +1,19 @@
 <template>
 <b-row>
     <b-col class="test">
-        <h2>Test <slot></slot></h2>
+        <h2>Test</h2>
+        <b-button @click="remove" class="delete-test" :disabled="this.$parent.testList[test.index].actions.length > 0" variant="danger" size="sm">Delete Test</b-button>
         <label>Test Name</label>
-        <input class="testName form-control" placeholder="Test name here" type="text">
+        <b-form-input class="test-name form-control" v-model="test.name"  placeholder="Test name here" type="text"></b-form-input>
 
-        <input @click="addAction" class="btn btn-secondary" v-b-popover.hover="'Add an action to the test'" type="button" value="Add Action">
-        <div ref="actions"></div>
+        <b-button @click="addAction(test.index)" class="add-action" variant="secondary" v-b-popover.hover="'Add an action to the test'">Add Action</b-button>
+
+        <test-action 
+            v-for="(action, index) in this.$parent.testList[test.index].actions" 
+            :key="index" 
+            :action="action" 
+            v-on:remove-action="removeAction(test.index, index)">
+        </test-action>
     </b-col>
 </b-row>
 </template>
@@ -16,23 +23,34 @@ import Vue from 'vue'
 import TestAction from './TestAction.vue'
 
 export default {
+    props: ['test'],
     components:{
         'test-action': TestAction
     },
     name: 'test',
     data: function(){
         return{
-            counter: 0
         }
     },
     methods:{
-        addAction(){
-            var actionComponent = Vue.extend(TestAction)
-            var instance = new actionComponent({})
-            this.$data.counter++
-            instance.$slots.default = [this.$data.counter]
-            instance.$mount();
-            this.$refs.actions.appendChild(instance.$el)
+        remove(){
+            this.$emit('remove-test')
+        },
+        removeAction(testIndex, index){
+            var counter = 0
+            var actions = this.$parent.testList[testIndex].actions
+            
+            actions.splice(index, 1)
+            actions.forEach(element => {
+                element.index = counter
+                counter++
+            });
+            
+        },
+        addAction(testIndex){
+            var actions = this.$parent.testList[testIndex].actions
+            
+            actions.push({index: actions.length, type: '', element: '', name: '', options: ''})
         }
     }
 }
@@ -42,10 +60,20 @@ export default {
     .test{
         margin-top: 30px;
         
-        // .btn {
-        //     float: right;
-        // }
-        .testName{
+        .add-action{
+            float: right;
+        }
+
+        .delete-test{
+            margin-left: 5%;
+        }
+        label, h2{
+            float: left;
+            clear: both;
+        }
+        .test-name{
+            float: left;
+            clear: both;
             width: 80%;
         }
     }
