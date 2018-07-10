@@ -19,11 +19,11 @@
 
     <b-form-select v-model="action.name" :options="options" v-b-popover.hover="'Add an action to the elements'"/>
     <b-form-input 
-        v-if="action.options == 'typeText'" 
-        v-model="action.variable" 
-        class="action-variable" 
+        v-if="action.name == 'typeText'" 
+        v-model="action.options" 
+        class="action-options" 
         placeholder="Lorem ipsum" 
-        v-b-popover.hover="'Action Variables'" 
+        v-b-popover.hover="'Action Option'" 
         type="text">
     </b-form-input>
 </b-col>

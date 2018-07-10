@@ -79,7 +79,7 @@ export default {
       
         test.actions.forEach(action => {
           if(action.options){
-            formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "'"
+            formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
           }
           else{
             formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "')" 
