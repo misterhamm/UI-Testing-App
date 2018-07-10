@@ -9,7 +9,7 @@
         v-b-popover.hover.topright="'Enter the element name here'" 
         placeholder="placeholder-element" 
         type="text"
-        v-model="action.name">
+        v-model="action.element">
     </b-form-input>
     
     <b-form-group class="element-radio">
@@ -17,9 +17,9 @@
         </b-form-radio-group>
     </b-form-group>
 
-    <b-form-select v-model="action.actionName" :options="options" v-b-popover.hover="'Add an action to the elements'"/>
+    <b-form-select v-model="action.name" :options="options" v-b-popover.hover="'Add an action to the elements'"/>
     <b-form-input 
-        v-if="action.actionName == 'typeText'" 
+        v-if="action.options == 'typeText'" 
         v-model="action.variable" 
         class="action-variable" 
         placeholder="Lorem ipsum" 
@@ -37,8 +37,8 @@ export default {
         return {
             radioSelected: 'class',
             radioOptions: [
-                {text: 'Class',   value: 'class'},
-                {text: 'Id',      value: 'id'}
+                {text: 'Class',   value: '.'},
+                {text: 'Id',      value: '#'}
             ],
             selected: null,
             options: [

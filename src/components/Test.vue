@@ -50,7 +50,7 @@ export default {
         addAction(testIndex){
             var actions = this.$parent.testList[testIndex].actions
             
-            actions.push({index: actions.length, name: '', type: '', actionName: '', variable: ''})
+            actions.push({index: actions.length, type: '', element: '', name: '', options: ''})
         }
     }
 }

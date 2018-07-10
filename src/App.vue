@@ -31,6 +31,7 @@
 <script>
 import Vue from 'vue'
 import Test from './components/Test.vue'
+import FileSaver from 'file-saver'
 
 export default {
   name: 'app',
@@ -65,18 +66,48 @@ export default {
     addTest(){
       this.testList.push({index: this.testList.length, name: '', actions: []})
     },
+     saveFile(generatedFile){
+      var file = new File([generatedFile], "test.js", {type: "text/plain;charset=utf-8"});
+      FileSaver.saveAs(file);
+    },
+    getTest(testList){
+      var formatedTest = ''
+
+      testList.forEach(test => {
+        formatedTest += "\n\ntest('" + test.name + "', async t => {"
+        formatedTest += "\n\tawait t"
+      
+        test.actions.forEach(action => {
+          if(action.options){
+            formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "'"
+          }
+          else{
+            formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+          }
+        });
+        
+        formatedTest += "\n});"
+      });
+
+      return formatedTest
+    },
+    generateFile(json){
+      var genFile = '' 
+      genFile += "import { Selector } from 'testcafe';"
+      genFile += "\n\nfixture `" + json.fixtureName + "`"
+      genFile += "\n\t.page `" + json.testUrl + "`;"
+      genFile += this.getTest(json.testList)
+
+      this.saveFile(genFile)
+    },
     setupJson(){
-      var json = {
+      this.testPackage = {
         fixtureName: this.fixtureName,
         testUrl: this.testUrl,
         testList: this.testList
       }
-      //send data to...
-      generateFile(json)
-    },
-    generateFile(json){
-      var file = new File(["Hello, world!"], "hello world.txt", {type: "text/plain;charset=utf-8"});
-      saveAs(file);
+
+      this.generateFile(this.testPackage)
     }
   }
 }
