@@ -9,9 +9,20 @@
       <label>Url to Test</label>
       <b-form-input class="test-url form-control" v-model="testUrl" placeholder="http://example.com/test" type="url"></b-form-input>
     </b-col>
-    <b-col cols="2">
+    <!-- <b-col cols="2">
       <b-button @click="addTest" class="add-test" v-model="testList" v-b-popover.hover="'Add a test to the fixture'" variant="primary" size="lg">Add Test</b-button>
+    </b-col> -->
+  </b-row>
+  <b-row>
+    <!-- <b-col>
+      <b-button @click="addBefore" class="add-before" v-model="beforeFixture" v-b-popover.hover.topright="'This will run before ever test'" variant="primary" size="lg">Add a Before</b-button>
+    </b-col> -->
+    <b-col>
+      <b-button @click="addTest" class="add-test" v-model="testList" v-b-popover.hover.topright="'Add a test to the fixture'" variant="primary" size="lg">Add Test</b-button>
     </b-col>
+    <!-- <b-col>
+      <b-button @click="addAfter" class="add-after" v-model="afterFixture" v-b-popover.hover.topright="'This will run after ever test'" variant="primary" size="lg">Add a After</b-button>
+    </b-col> -->
   </b-row>
 
   
@@ -125,7 +136,7 @@ export default {
     width: 100%;
     margin-top: 30px;
   }
-  .add-test{
+  .add-test, .add-before, .add-after{
     width: 100%;
     margin-top: 30px;
     padding: 4px;

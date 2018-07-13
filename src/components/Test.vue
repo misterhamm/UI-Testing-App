@@ -5,6 +5,7 @@
         <b-button @click="remove" class="delete-test" :disabled="this.$parent.testList[test.index].actions.length > 0" variant="danger" size="sm">Delete Test</b-button>
         <label>Test Name</label>
         <b-form-input class="test-name form-control" v-model="test.name"  placeholder="Test name here" type="text"></b-form-input>
+        <b-form-input class="test-speed form-control" v-model="test.speed" placeholder="Test Speed" type="number" value="1" step=".1" min=".1" max="1"></b-form-input>
 
         <b-button @click="addAction(test.index)" class="add-action" variant="secondary" v-b-popover.hover="'Add an action to the test'">Add Action</b-button>
 
@@ -71,10 +72,15 @@ export default {
             float: left;
             clear: both;
         }
+        .test-speed{
+            width: 12%;
+            margin-left: 1%;
+            float: left;
+        }
         .test-name{
             float: left;
             clear: both;
-            width: 80%;
+            width: 60%;
         }
     }
 </style>
