@@ -9,24 +9,44 @@
       <label>Url to Test</label>
       <b-form-input class="test-url form-control" v-model="testUrl" placeholder="http://example.com/test" type="url"></b-form-input>
     </b-col>
-    <!-- <b-col cols="2">
-      <b-button @click="addTest" class="add-test" v-model="testList" v-b-popover.hover="'Add a test to the fixture'" variant="primary" size="lg">Add Test</b-button>
-    </b-col> -->
   </b-row>
   <b-row>
-    <!-- <b-col>
-      <b-button @click="addBefore" class="add-before" v-model="beforeFixture" v-b-popover.hover.topright="'This will run before ever test'" variant="primary" size="lg">Add a Before</b-button>
-    </b-col> -->
     <b-col>
-      <b-button @click="addTest" class="add-test" v-model="testList" v-b-popover.hover.topright="'Add a test to the fixture'" variant="primary" size="lg">Add Test</b-button>
+      <b-button 
+        @click="addBeforeEach" 
+        class="add-before"
+        v-model="fixtureBeforeEach"
+        :disabled="fixtureBeforeEach.length > 0"
+        variant="primary" size="lg">
+        Add Before
+      </b-button>
     </b-col>
-    <!-- <b-col>
-      <b-button @click="addAfter" class="add-after" v-model="afterFixture" v-b-popover.hover.topright="'This will run after ever test'" variant="primary" size="lg">Add a After</b-button>
-    </b-col> -->
+    <b-col>
+      <b-button 
+        @click="addTest" 
+        class="add-test" 
+        v-model="testList" 
+        v-b-popover.hover.top="'Add a test to the fixture'" 
+        variant="primary" size="lg">
+        Add Test
+      </b-button>
+    </b-col>
+    <b-col>
+      <b-button 
+        @click="addAfterEach" 
+        class="add-after" 
+        v-model="fixtureAfterEach"
+        :disabled="fixtureAfterEach.length > 0"
+        variant="primary" size="lg">
+        Add After
+      </b-button>
+    </b-col>
   </b-row>
 
   
+  <fixture-before v-for="(before, index) in fixtureBeforeEach" :key="index" v-on:remove-before="removeBefore(index)"></fixture-before>
   <test v-for="(test, index) in testList" :key="index" :test="test" v-on:remove-test="removeTest(index)"></test>
+  <fixture-after v-for="(after, index) in fixtureAfterEach" :key="index" v-on:remove-after="removeAfter(index)"></fixture-after>
 
   <b-button 
     @click="setupJson" 
@@ -36,48 +56,64 @@
     size="lg">Save Test
   </b-button>
   {{ testPackage }}
+  {{ fixtureBeforeEach }}
+  {{ fixtureAfterEach }}
 </b-container>
 </template>
 
 <script>
 import Vue from 'vue'
 import Test from './components/Test.vue'
+import FixtureBefore from './components/FixtureBefore.vue'
+import FixtureAfter from './components/FixtureAfter.vue'
 import FileSaver from 'file-saver'
 
 export default {
   name: 'app',
   components:{
     'test': Test,
+    'fixture-before': FixtureBefore,
+    'fixture-after': FixtureAfter,
   },
   data() {
     return {
       fixtureName: null,
       testUrl: null,
+      fixtureBeforeEach: [],
+      fixtureAfterEach: [],
       testList: [],
       testPackage: {}
     }
   },
   methods:{
-    actionsAreReady(){
-      this.testList.forEach(element => {
-        element.actions.forEach(el => {
-          
-        });        
-      });
+    addBeforeEach(){
+      this.fixtureBeforeEach.push({actions: []})
+      console.log(this.fixtureBeforeEach.length != 1)
+      console.log(this.fixtureBeforeEach.length)
+      console.log(this.fixtureBeforeEach)
+    },
+    addTest(){
+      this.testList.push({index: this.testList.length, name: '', actions: []})
+    },
+    addAfterEach(){
+      this.fixtureAfterEach.push({actions: []})
+    },
+    removeBefore(index){
+      this.fixtureBeforeEach.splice(index, 1)
     },
     removeTest(index){
       var counter = 0
 
       this.testList.splice(index, 1)
-      this.testList.forEach(element => {
-          element.index = counter
+      this.testList.forEach(test => {
+          test.index = counter
           counter++
       });
     },
-    addTest(){
-      this.testList.push({index: this.testList.length, name: '', actions: []})
+    removeAfter(index){
+      this.fixtureAfterEach.splice(index, 1)
     },
-     saveFile(generatedFile){
+    saveFile(generatedFile){
       var file = new File([generatedFile], "test.js", {type: "text/plain;charset=utf-8"});
       FileSaver.saveAs(file);
     },
@@ -102,19 +138,65 @@ export default {
 
       return formatedTest
     },
+    getBeforeEach(beforeEachActions){
+      var formatedBefore = ''
+
+      formatedBefore += '.before( async t => {'
+
+      beforeEachActions.forEach(action => {
+         if(action.options){
+            formatedBefore += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
+          }
+          else{
+            formatedBefore += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+          }
+      });
+
+      formatedBefore += '})'
+      return formatedBefore
+    },
+    getAfterEach(afterEachActions){
+      var formatedAfter = ''
+
+      formatedAfter += '.after( async t => {'
+
+      afterEachActions.forEach(action => {
+         if(action.options){
+            formatedAfter += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
+          }
+          else{
+            formatedAfter += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+          }
+      });
+
+      formatedAfter += '})'
+      return formatedAfter
+
+
+    },
     generateFile(json){
       var genFile = '' 
       genFile += "import { Selector } from 'testcafe';"
       genFile += "\n\nfixture `" + json.fixtureName + "`"
       genFile += "\n\t.page `" + json.testUrl + "`;"
+      
+      if(json.fixtureBeforeEach){
+        genFile += this.getBeforeEach(json.beforeEach.actions)
+      }
+      
+      if(json.fixtureAfterEach){
+        genFile += this.getAfterEach(json.afterEach.actions)
+      }
+      
       genFile += this.getTest(json.testList)
-
       this.saveFile(genFile)
     },
     setupJson(){
       this.testPackage = {
         fixtureName: this.fixtureName,
         testUrl: this.testUrl,
+        beforeEach: this.fixtureBeforeEach,
+        afterEach: this.fixtureAfterEach,
         testList: this.testList
       }
 

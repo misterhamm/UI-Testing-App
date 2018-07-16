@@ -78,19 +78,15 @@ export default {
             clear: both;
             margin-right: 5%;
         }
-
         h3, label{
             float: left;
             clear: both;
         }
-
         .delete-btn{
             float: right;
         }
-
         .element-radio{
             float: left;
-            // clear: both;
             margin-top: 10px;
         }
     }
