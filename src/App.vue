@@ -56,8 +56,6 @@
     size="lg">Save Test
   </b-button>
   {{ testPackage }}
-  {{ fixtureBeforeEach }}
-  {{ fixtureAfterEach }}
 </b-container>
 </template>
 
@@ -88,9 +86,6 @@ export default {
   methods:{
     addBeforeEach(){
       this.fixtureBeforeEach.push({actions: []})
-      console.log(this.fixtureBeforeEach.length != 1)
-      console.log(this.fixtureBeforeEach.length)
-      console.log(this.fixtureBeforeEach)
     },
     addTest(){
       this.testList.push({index: this.testList.length, name: '', actions: []})
@@ -123,6 +118,7 @@ export default {
       testList.forEach(test => {
         formatedTest += "\n\ntest('" + test.name + "', async t => {"
         formatedTest += "\n\tawait t"
+        formatedTest += "\n\t.setTestSpeed(" + test.speed + ")\n"
       
         test.actions.forEach(action => {
           if(action.options){
@@ -141,51 +137,49 @@ export default {
     getBeforeEach(beforeEachActions){
       var formatedBefore = ''
 
-      formatedBefore += '.before( async t => {'
+      formatedBefore += '\n\t.before( async t => {'
 
       beforeEachActions.forEach(action => {
          if(action.options){
-            formatedBefore += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
+            formatedBefore += "\n\t\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
           }
           else{
-            formatedBefore += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+            formatedBefore += "\n\t\t." + action.name + "('" + action.type + action.element + "')" 
           }
       });
 
-      formatedBefore += '})'
+      formatedBefore += '\n\t})'
       return formatedBefore
     },
     getAfterEach(afterEachActions){
       var formatedAfter = ''
 
-      formatedAfter += '.after( async t => {'
+      formatedAfter += '\n\t.after( async t => {'
 
       afterEachActions.forEach(action => {
          if(action.options){
-            formatedAfter += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
+            formatedAfter += "\n\t\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
           }
           else{
-            formatedAfter += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+            formatedAfter += "\n\t\t." + action.name + "('" + action.type + action.element + "')" 
           }
       });
 
-      formatedAfter += '})'
+      formatedAfter += '\n\t})'
       return formatedAfter
-
-
     },
     generateFile(json){
       var genFile = '' 
       genFile += "import { Selector } from 'testcafe';"
       genFile += "\n\nfixture `" + json.fixtureName + "`"
-      genFile += "\n\t.page `" + json.testUrl + "`;"
+      genFile += "\n\t.page `" + json.testUrl + "`"
       
-      if(json.fixtureBeforeEach){
-        genFile += this.getBeforeEach(json.beforeEach.actions)
+      if(json.beforeEach.length >= 1){
+        genFile += this.getBeforeEach(json.beforeEach[0].actions)
       }
       
-      if(json.fixtureAfterEach){
-        genFile += this.getAfterEach(json.afterEach.actions)
+      if(json.afterEach.length >= 1){
+        genFile += this.getAfterEach(json.afterEach[0].actions)
       }
       
       genFile += this.getTest(json.testList)
