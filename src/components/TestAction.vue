@@ -2,7 +2,7 @@
 <b-col class="testAction" cols="4">
     <h3>Action</h3>
     
-    <b-button class="delete-btn" @click="deleteAction" size="sm" variant="danger">Delete</b-button>
+    <b-button @click="deleteAction" class="delete-btn"  size="sm" variant="danger">Delete</b-button>
 
     <b-form-input 
         class="test-element form-control" 

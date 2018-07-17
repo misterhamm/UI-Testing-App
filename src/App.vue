@@ -41,6 +41,16 @@
         Add After
       </b-button>
     </b-col>
+     <b-col>
+      <b-button 
+        @click="addConsts" 
+        class="add-consts" 
+        v-model="consts"
+         v-b-popover.hover.top="'Access elements that don\'t have unique identifiers with consts'"
+        variant="primary" size="lg">
+        Add Consts
+      </b-button>
+    </b-col>
   </b-row>
 
   
@@ -79,6 +89,7 @@ export default {
     return {
       fixtureName: null,
       testUrl: null,
+      consts: [],
       fixtureBeforeEach: [],
       fixtureAfterEach: [],
       testList: [],
@@ -97,6 +108,9 @@ export default {
     },
     addAfterEach(){
       this.fixtureAfterEach.push({actions: []})
+    },
+    addConstVariable(){
+      this.consts.push({type: '', element: '', func: '', options: ''})
     },
     removeBefore(index){
       this.fixtureBeforeEach.splice(index, 1)
@@ -218,7 +232,7 @@ export default {
     width: 100%;
     margin-top: 30px;
   }
-  .add-test, .add-before, .add-after{
+  .add-test, .add-before, .add-after, .add-consts{
     width: 100%;
     margin-top: 30px;
     padding: 4px;
