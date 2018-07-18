@@ -3,11 +3,11 @@
   <b-row>
     <b-col>
       <label>Fixture Name</label>
-      <b-form-input class="fixture-name form-control" v-model="fixtureName" placeholder="Project Name" type="text"></b-form-input>
+      <b-form-input class="fixture-name" v-model="fixtureName" placeholder="Project Name" type="text"></b-form-input>
     </b-col>
     <b-col>
       <label>Url to Test</label>
-      <b-form-input class="test-url form-control" v-model="testUrl" placeholder="http://example.com/test" type="url"></b-form-input>
+      <b-form-input class="test-url" v-model="testUrl" placeholder="http://example.com/test" type="url"></b-form-input>
     </b-col>
   </b-row>
   <b-row>
@@ -43,17 +43,18 @@
     </b-col>
      <b-col>
       <b-button 
-        @click="addConsts" 
+        @click="addConstVariable" 
         class="add-consts" 
-        v-model="consts"
+        v-model="constList"
          v-b-popover.hover.top="'Access elements that don\'t have unique identifiers with consts'"
         variant="primary" size="lg">
         Add Consts
       </b-button>
     </b-col>
   </b-row>
-
-  
+  <b-row>
+    <consts-var v-for="(constVar, index) in constList" :key="index" :constVar="constVar" v-on:remove-consts="removeConst(index)"></consts-var>
+  </b-row>
   <fixture-before v-for="(before, index) in fixtureBeforeEach" :key="index" v-on:remove-before="removeBefore(index)"></fixture-before>
   <test v-for="(test, index) in testList" :key="index" :test="test" v-on:remove-test="removeTest(index)"></test>
   <fixture-after v-for="(after, index) in fixtureAfterEach" :key="index" v-on:remove-after="removeAfter(index)"></fixture-after>
@@ -67,7 +68,7 @@
   </b-button>
   {{ testPackage }}
   {{ fixtureBeforeEach }}
-  {{ fixtureAfterEach }}
+  {{ constList }}
 </b-container>
 </template>
 
@@ -76,6 +77,7 @@ import Vue from 'vue'
 import Test from './components/Test.vue'
 import FixtureBefore from './components/FixtureBefore.vue'
 import FixtureAfter from './components/FixtureAfter.vue'
+import ConstsVariable from './components/Consts.vue'
 import FileSaver from 'file-saver'
 
 export default {
@@ -84,12 +86,13 @@ export default {
     'test': Test,
     'fixture-before': FixtureBefore,
     'fixture-after': FixtureAfter,
+    'consts-var': ConstsVariable,
   },
   data() {
     return {
       fixtureName: null,
       testUrl: null,
-      consts: [],
+      constList: [],
       fixtureBeforeEach: [],
       fixtureAfterEach: [],
       testList: [],
@@ -110,7 +113,7 @@ export default {
       this.fixtureAfterEach.push({actions: []})
     },
     addConstVariable(){
-      this.consts.push({type: '', element: '', func: '', options: ''})
+      this.constList.push({name: '', type: '', element: '', func: '', options: ''})
     },
     removeBefore(index){
       this.fixtureBeforeEach.splice(index, 1)
@@ -127,10 +130,6 @@ export default {
     removeAfter(index){
       this.fixtureAfterEach.splice(index, 1)
     },
-    saveFile(generatedFile){
-      var file = new File([generatedFile], "test.js", {type: "text/plain;charset=utf-8"});
-      FileSaver.saveAs(file);
-    },
     getTest(testList){
       var formatedTest = ''
 
@@ -139,18 +138,43 @@ export default {
         formatedTest += "\n\tawait t"
       
         test.actions.forEach(action => {
-          if(action.options){
-            formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
+          if(action.useConstVar){
+            if(action.options){
+              formatedTest += "\n\t." + action.name + "(" + action.element + ", '" + action.options + "')"
+            }
+            else{
+              formatedTest += "\n\t." + action.name + "(" + action.element + ")"
+            }
           }
           else{
-            formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+            if(action.options){
+              formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "', '" + action.options + "')"
+            }
+            else{
+              formatedTest += "\n\t." + action.name + "('" + action.type + action.element + "')" 
+            }
           }
+          
         });
         
         formatedTest += "\n});"
       });
 
       return formatedTest
+    },
+    getConstsVars(constList){
+      var formatedConsts = ''
+
+      constList.forEach(constVar => {
+        switch(constVar.func){
+          case 'nth': 
+            formatedConsts += "\n const "+ constVar.name + " = Selector('"+ constVar.type + constVar.element +"')." + constVar.func + "(" + parseInt(constVar.options) + ")"
+            break
+        }
+        
+      });
+
+      return formatedConsts
     },
     getBeforeEach(beforeEachActions){
       var formatedBefore = ''
@@ -188,9 +212,18 @@ export default {
 
 
     },
+    saveFile(generatedFile, fixtureName){
+      var file = new File([generatedFile], "" + fixtureName + ".js", {type: "text/plain;charset=utf-8"});
+      FileSaver.saveAs(file);
+    },
     generateFile(json){
       var genFile = '' 
       genFile += "import { Selector } from 'testcafe';"
+
+      if(json.constList[0]){
+        genFile += this.getConstsVars(json.constList)
+      }
+
       genFile += "\n\nfixture `" + json.fixtureName + "`"
       genFile += "\n\t.page `" + json.testUrl + "`;"
       
@@ -203,12 +236,13 @@ export default {
       }
       
       genFile += this.getTest(json.testList)
-      this.saveFile(genFile)
+      this.saveFile(genFile, json.fixtureName)
     },
     setupJson(){
       this.testPackage = {
         fixtureName: this.fixtureName,
         testUrl: this.testUrl,
+        constList: this.constList,
         beforeEach: this.fixtureBeforeEach,
         afterEach: this.fixtureAfterEach,
         testList: this.testList

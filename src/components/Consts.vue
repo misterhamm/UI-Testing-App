@@ -1,30 +1,38 @@
 <template>
-<b-col class="consts" cols="4">
+<b-col class="constVar" cols="4">
     <h3>Constant Veriable</h3>
     
-    <b-button @click="deleteConsts" class="delete-consts"  size="sm" variant="danger">Delete</b-button>
+    <b-button @click="deleteConstVar" class="delete-constVar"  size="sm" variant="danger">Delete</b-button>
 
     <b-form-input 
-        class="test-element form-control" 
+        class="constVar-name" 
+        v-b-popover.hover.topright="'Enter the const name here'" 
+        placeholder="placeholder-name" 
+        type="text"
+        v-model="constVar.name">
+    </b-form-input>
+
+    <b-form-input 
+        class="constVar-element" 
         v-b-popover.hover.topright="'Enter the element name here'" 
         placeholder="placeholder-element" 
         type="text"
-        v-model="consts.element">
+        v-model="constVar.element">
     </b-form-input>
     
     <b-form-group class="element-radio">
         <b-form-radio-group 
-            v-model="consts.type" 
+            v-model="constVar.type" 
             :options="radioOptions" 
             plain 
             v-b-popover.hover.topright="'Is the element a class or an Id?'">
         </b-form-radio-group>
     </b-form-group>
 
-    <b-form-select v-model="consts.func" :options="options" v-b-popover.hover="'Choose a function'"/>
+    <b-form-select v-model="constVar.func" :options="options" v-b-popover.hover="'Choose a function'"/>
     <b-form-input 
-        v-model="consts.options" 
-        class="consts-options" 
+        v-model="constVar.options" 
+        class="constVar-options" 
         placeholder="Lorem ipsum" 
         v-b-popover.hover="'Consts Option'" 
         type="text">
@@ -34,8 +42,8 @@
 
 <script>
 export default {
-    props:['consts'], 
-    name: 'consts',
+    props:['constVar'], 
+    name: 'constVar',
     data(){
         return {
             radioSelected: 'class',
@@ -45,7 +53,7 @@ export default {
             ],
             selected: null,
             options: [
-                { value: null,              text: 'Select an function' },
+                // { value: null,              text: 'Select an function' },
                 { value: 'nth',             text: 'nth' },
                 { value: 'withText',        text: 'withText' },
                 { value: 'withExactText',   text: 'withExactText' },
@@ -63,19 +71,19 @@ export default {
         }
     },
     methods:{
-        deleteConsts(){
-            this.$emit('remove-consts')
+        deleteConstVar(){
+            this.$emit('remove-constVar')
         }
     }
 }
 </script>
 
 <style lang="scss">
-    .consts{
+    .constVar{
         float: left;
         margin-top: 20px;
 
-        .consts-element{
+        .constVar-element{
             width: 60%;
             float: left;
             clear: both;
@@ -85,7 +93,7 @@ export default {
             float: left;
             clear: both;
         }
-        .delete-consts{
+        .delete-constVar{
             float: right;
         }
         .element-radio{

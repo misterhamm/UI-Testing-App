@@ -2,21 +2,27 @@
 <b-row>
     <b-col class="test">
         <h2>Test</h2>
-        <b-button @click="remove" class="delete-test" :disabled="this.$parent.testList[test.index].actions.length > 0" variant="danger" size="sm">Delete Test</b-button>
+        
+        <b-button 
+            @click="remove" 
+            class="delete-test" 
+            :disabled="this.$parent.testList[test.index].actions.length > 0" 
+            variant="danger" size="sm">
+            Delete Test
+        </b-button>
         <label>Test Name</label>
         <b-form-input 
-            class="test-name form-control" 
+            class="test-name" 
             v-model="test.name" 
             placeholder="Test name here" 
             type="text">
         </b-form-input>
         <b-form-input 
-            class="test-speed form-control" 
+            class="test-speed" 
             v-model="test.speed" 
             v-b-popover.hover.top="'0.1 - 1 (1 being the fastest)'"
             placeholder="Test Speed" 
             type="number" 
-            required="true"
             value="1" step=".1" min=".1" max="1">
         </b-form-input>
 
@@ -65,7 +71,7 @@ export default {
         addAction(testIndex){
             var actions = this.$parent.testList[testIndex].actions
             
-            actions.push({index: actions.length, type: '', element: '', name: '', options: ''})
+            actions.push({index: actions.length, constVar: false, type: '', element: '', name: '', options: ''})
         }
     }
 }

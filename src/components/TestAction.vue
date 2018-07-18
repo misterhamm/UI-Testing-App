@@ -2,18 +2,39 @@
 <b-col class="testAction" cols="4">
     <h3>Action</h3>
     
-    <b-button @click="deleteAction" class="delete-btn"  size="sm" variant="danger">Delete</b-button>
+    <b-button 
+        @click="deleteAction" 
+        class="delete-btn"
+        variant="danger" size="sm">
+        Delete
+    </b-button>
+
+    <b-button
+        @click="setUseConstVar(action); getConstListNames()"
+        :pressed.sync="useConstVar"
+        class="use-const" 
+        variant="outline-secondary" size="sm">
+        Use Const
+    </b-button>
 
     <b-form-input 
-        class="test-element form-control" 
+        v-if="useConstVar == false"
+        class="test-element" 
         v-b-popover.hover.topright="'Enter the element name here'" 
         placeholder="placeholder-element" 
         type="text"
         v-model="action.element">
     </b-form-input>
+    <b-form-select v-model="action.element" v-if="useConstVar == true" :options="constListNames">
+    </b-form-select>
     
     <b-form-group class="element-radio">
-        <b-form-radio-group v-model="action.type" :options="radioOptions" plain v-b-popover.hover.topright="'Is the element a class or an Id?'">
+        <b-form-radio-group 
+            v-model="action.type" 
+            v-if="useConstVar == false"
+            :options="radioOptions" 
+            plain 
+            v-b-popover.hover.topright="'Is the element a class or an Id?'">
         </b-form-radio-group>
     </b-form-group>
 
@@ -35,6 +56,9 @@ export default {
     name: 'testAction',
     data(){
         return {
+            useConstVar: false,
+            constList: this.$parent.$parent.constList,
+            constListNames: [], 
             radioSelected: 'class',
             radioOptions: [
                 {text: 'Class',   value: '.'},
@@ -60,6 +84,21 @@ export default {
         }
     },
     methods:{
+        setUseConstVar(action){
+            if(this.useConstVar){
+                action.useConstVar = true
+            }
+            else{
+                action.useConstVar = false
+            }
+        },
+        getConstListNames(){
+            debugger
+            this.constListNames = []
+            this.constList.forEach(constVar => {
+                this.constListNames.push(constVar.name)
+            });
+        },
         deleteAction(){
             this.$emit('remove-action')
         }
@@ -72,6 +111,10 @@ export default {
         float: left;
         margin-top: 20px;
 
+        .use-const{
+            float: right;
+            margin-right: 1%; 
+        }
         .test-element{
             width: 60%;
             float: left;
