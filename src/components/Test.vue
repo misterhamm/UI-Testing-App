@@ -26,7 +26,13 @@
             value="1" step=".1" min=".1" max="1">
         </b-form-input>
 
-        <b-button @click="addAction(test.index)" class="add-action" variant="secondary" v-b-popover.hover="'Add an action to the test'">Add Action</b-button>
+        <b-button 
+            @click="addAction(test.index)" 
+            class="add-action" 
+            variant="secondary" 
+            v-b-popover.hover="'Add an action to the test'">
+            Add Action
+        </b-button>
         <b-row>
             <test-action 
                 v-for="(action, index) in this.$parent.testList[test.index].actions" 

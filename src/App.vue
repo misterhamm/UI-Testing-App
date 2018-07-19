@@ -52,9 +52,8 @@
       </b-button>
     </b-col>
   </b-row>
-  <b-row>
-    <consts-var v-for="(constVar, index) in constList" :key="index" :constVar="constVar" v-on:remove-consts="removeConst(index)"></consts-var>
-  </b-row>
+  
+  <consts-var v-for="(constVar, index) in constList" :key="index" :constVar="constVar" v-on:remove-constVar="removeConst(index)"></consts-var>
   <fixture-before v-for="(before, index) in fixtureBeforeEach" :key="index" v-on:remove-before="removeBefore(index)"></fixture-before>
   <test v-for="(test, index) in testList" :key="index" :test="test" v-on:remove-test="removeTest(index)"></test>
   <fixture-after v-for="(after, index) in fixtureAfterEach" :key="index" v-on:remove-after="removeAfter(index)"></fixture-after>
@@ -66,9 +65,8 @@
     variant="success" 
     size="lg">Save Test
   </b-button>
-  {{ testPackage }}
-  {{ fixtureBeforeEach }}
   {{ constList }}
+  {{ testPackage }}
 </b-container>
 </template>
 
@@ -113,7 +111,7 @@ export default {
       this.fixtureAfterEach.push({actions: []})
     },
     addConstVariable(){
-      this.constList.push({name: '', type: '', element: '', func: '', options: ''})
+      this.constList.push({index: this.constList.length, name: '', type: '', element: '', funcs: [] })
     },
     removeBefore(index){
       this.fixtureBeforeEach.splice(index, 1)
@@ -129,6 +127,9 @@ export default {
     },
     removeAfter(index){
       this.fixtureAfterEach.splice(index, 1)
+    },
+    removeConst(index){
+      this.constList.splice(index, 1)
     },
     getTest(testList){
       var formatedTest = ''
@@ -166,12 +167,14 @@ export default {
       var formatedConsts = ''
 
       constList.forEach(constVar => {
+        constVar.funcs.forEach(func => {
+          
+        });
         switch(constVar.func){
           case 'nth': 
             formatedConsts += "\n const "+ constVar.name + " = Selector('"+ constVar.type + constVar.element +"')." + constVar.func + "(" + parseInt(constVar.options) + ")"
             break
         }
-        
       });
 
       return formatedConsts
