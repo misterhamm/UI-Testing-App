@@ -35,7 +35,7 @@
     </b-form-input>
     <b-form-input 
         v-model="constFunc.options"
-        v-else-if="constFunc.name == 'find' || constFunc.name == 'parent' || constFunc.name == 'child' || constFunc.name == 'sibling' || constFunc.name == 'prevSibling' || constFunc.name == 'nextSibling'"
+        v-else
         class="constFunc-options"
         placeholder=".example-class"
         v-b-popover.hover="'Used like jQuery function: {element} OR .{className} OR #{idName}'"
