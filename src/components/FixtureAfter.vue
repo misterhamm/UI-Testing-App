@@ -1,5 +1,5 @@
 <template>
-<b-row>
+<b-row :key="'fixAfter-' + fixAfter.index">
     <b-col class="after-each">
         <h2 v-b-popover.hover.left="'These actions will run after ever test'">After Each</h2>
         <b-button @click="remove" class="delete-after-each" :disabled="this.$parent.fixtureAfterEach[0].actions.length > 0" variant="danger" size="sm">Delete After Each</b-button>
@@ -22,11 +22,11 @@ import Vue from 'vue'
 import TestAction from './TestAction.vue'
 
 export default {
-    props: ['test'],
+    props: ['fixAfter'],
+    name: 'fixAfter',
     components:{
         'test-action': TestAction
     },
-    name: 'test',
     data: function(){
         return{
         }

@@ -1,5 +1,5 @@
 <template>
-<b-row>
+<b-row :key="'test-' + test.index">
     <b-col class="test">
         <h2>Test</h2>
         

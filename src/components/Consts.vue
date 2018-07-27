@@ -1,5 +1,5 @@
 <template>
-<b-row>
+<b-row :key="'constVar-'+ constVar.index">
     <b-col class="constVar">
         <h3>Constant Veriable</h3>
         

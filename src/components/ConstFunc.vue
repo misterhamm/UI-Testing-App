@@ -1,5 +1,5 @@
 <template>
-<b-col class="constFunc" cols="4">
+<b-col :key="'constFunc-' + constFunc.index" class="constFunc" cols="4">
     <b-button
         @click="deleteFunc" 
         class="delete-func" 

@@ -1,5 +1,5 @@
 <template>
-<b-row>
+<b-row :key="'fixBefore-' + fixBefore.index">
     <b-col class="before-each">
         <h2 v-b-popover.hover.left="'These actions will run before ever test'">Before Each</h2>
         <b-button @click="remove" class="delete-before-each" :disabled="this.$parent.fixtureBeforeEach[0].actions.length > 0" variant="danger" size="sm">Delete Before Each</b-button>
@@ -22,11 +22,11 @@ import Vue from 'vue'
 import TestAction from './TestAction.vue'
 
 export default {
-    props: ['test'],
+    props: ['fixBefore'],
+    name: 'fixBefore',
     components:{
         'test-action': TestAction
     },
-    name: 'test',
     data: function(){
         return{
         }

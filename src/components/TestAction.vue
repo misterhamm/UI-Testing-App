@@ -1,5 +1,5 @@
 <template>
-<b-col class="testAction" cols="4">
+<b-col :key="'action-' + action.index" class="testAction" cols="4">
     <h3>Action</h3>
     
     <b-button 
@@ -40,7 +40,7 @@
 
     <b-form-select v-model="action.name" :options="options" v-b-popover.hover="'Add an action to the elements'"/>
     <b-form-input 
-        v-if="action.name == 'typeText'" 
+        v-if="action.name == 'typeText' || action.name == 'pressKey'" 
         v-model="action.options" 
         class="action-options" 
         placeholder="Lorem ipsum" 
@@ -74,7 +74,7 @@ export default {
                 { value: 'rightClick',        text: 'Right Click' },
                 { value: 'hover',             text: 'Hover' },
                 // { value: 'wait',              text: 'Wait' },
-                // { value: 'pressKey',          text: 'Press Key' },
+                { value: 'pressKey',          text: 'Press Key' },
                 // { value: 'dragElement',       text: 'Drag Element' },
                 // { value: 'navigate',          text: 'Navigate' },
                 // { value: 'takeScreenshot',    text: 'Take Screenshot' },

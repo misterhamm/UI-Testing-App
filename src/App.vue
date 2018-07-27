@@ -54,9 +54,9 @@
   </b-row>
   
   <consts-var v-for="(constVar, index) in constList" :key="index" :constVar="constVar" v-on:remove-constVar="removeConst(index)"></consts-var>
-  <fixture-before v-for="(before, index) in fixtureBeforeEach" :key="index" v-on:remove-before="removeBefore(index)"></fixture-before>
+  <fixture-before v-for="(before, index) in fixtureBeforeEach" :fixBefore="before" :key="index" v-on:remove-before="removeBefore(index)"></fixture-before>
   <test v-for="(test, index) in testList" :key="index" :test="test" v-on:remove-test="removeTest(index)"></test>
-  <fixture-after v-for="(after, index) in fixtureAfterEach" :key="index" v-on:remove-after="removeAfter(index)"></fixture-after>
+  <fixture-after v-for="(after, index) in fixtureAfterEach" :fixAfter="after" :key="index" v-on:remove-after="removeAfter(index)"></fixture-after>
 
   <b-button 
     @click="setupJson" 
@@ -65,8 +65,9 @@
     variant="success" 
     size="lg">Save Test
   </b-button>
-  {{ constList }}
   {{ testPackage }}
+  <!-- {{ constList }} -->
+  <!-- {{ testPackage }} -->
 </b-container>
 </template>
 
@@ -100,9 +101,6 @@ export default {
   methods:{
     addBeforeEach(){
       this.fixtureBeforeEach.push({actions: []})
-      console.log(this.fixtureBeforeEach.length != 1)
-      console.log(this.fixtureBeforeEach.length)
-      console.log(this.fixtureBeforeEach)
     },
     addTest(){
       this.testList.push({index: this.testList.length, name: '', actions: []})
@@ -133,6 +131,8 @@ export default {
     },
     getTest(testList){
       var formatedTest = ''
+      //todo press key action
+
 
       testList.forEach(test => {
         formatedTest += "\n\ntest('" + test.name + "', async t => {"
@@ -165,16 +165,20 @@ export default {
     },
     getConstsVars(constList){
       var formatedConsts = ''
+      //todo .find needs single quotes
+
 
       constList.forEach(constVar => {
+        formatedConsts += "\nconst "+ constVar.name + " = Selector('" + constVar.type + constVar.element + "')"
+
         constVar.funcs.forEach(func => {
-          
+          if(func.name == 'withText' || func.name == 'pressKey'){
+            formatedConsts += "." + func.name + "('" + func.options + "')"  
+          }
+          else{
+            formatedConsts += "." + func.name + "(" + func.options + ")"
+          }
         });
-        switch(constVar.func){
-          case 'nth': 
-            formatedConsts += "\n const "+ constVar.name + " = Selector('"+ constVar.type + constVar.element +"')." + constVar.func + "(" + parseInt(constVar.options) + ")"
-            break
-        }
       });
 
       return formatedConsts
@@ -221,7 +225,7 @@ export default {
     },
     generateFile(json){
       var genFile = '' 
-      genFile += "import { Selector } from 'testcafe';"
+      genFile += "import { Selector } from 'testcafe';\n"
 
       if(json.constList[0]){
         genFile += this.getConstsVars(json.constList)
