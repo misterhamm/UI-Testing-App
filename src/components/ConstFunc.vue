@@ -1,5 +1,5 @@
 <template>
-<b-col :key="'constFunc-' + constFunc.index" class="constFunc" cols="4">
+<b-col class="constFunc" cols="4">
     <b-button
         @click="deleteFunc" 
         class="delete-func" 
@@ -17,6 +17,7 @@
         v-b-popover.hover="'Remember the first element starts at 0'"
         type="number" min=0>
     </b-form-input>
+
     <b-form-input 
         v-model="constFunc.options"
         v-else-if="constFunc.name == 'withText' || constFunc.name == 'withExactText'"
@@ -25,6 +26,7 @@
         v-b-popover.hover="'Find an element with the text'"
         type="text">
     </b-form-input>
+
     <b-form-input 
         v-model="constFunc.options"
         v-else-if="constFunc.name == 'withAttribute'"
@@ -33,6 +35,7 @@
         v-b-popover.hover="'You must put single quotes around attribute name followed by a common then single quotes around attribute value'"
         type="text">
     </b-form-input>
+    
     <b-form-input 
         v-model="constFunc.options"
         v-else
@@ -57,7 +60,7 @@ export default {
             ],
             selected: null,
             options: [
-                // { value: null,              text: 'Select an function' },
+                { value: null,              text: 'Select a function' },
                 { value: 'nth',             text: 'nth' },
                 { value: 'withText',        text: 'withText' },
                 { value: 'withExactText',   text: 'withExactText' },

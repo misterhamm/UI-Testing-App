@@ -1,13 +1,28 @@
 <template>
-<b-row :key="'fixBefore-' + fixBefore.index">
+<b-row>
     <b-col class="before-each">
         <h2 v-b-popover.hover.left="'These actions will run before ever test'">Before Each</h2>
-        <b-button @click="remove" class="delete-before-each" :disabled="this.$parent.fixtureBeforeEach[0].actions.length > 0" variant="danger" size="sm">Delete Before Each</b-button>
+        
+        <b-button 
+            @click="remove" 
+            class="delete-before-each" 
+            :disabled="this.$parent.fixtureBeforeEach[0].actions.length > 0" 
+            variant="danger" 
+            size="sm">
+            Delete Before Each
+        </b-button>
 
-        <b-button @click="addAction()" class="add-action" variant="secondary" v-b-popover.hover="'Add an action to the test'">Add Action</b-button>
+        <b-button 
+            @click="addAction()" 
+            class="add-action" 
+            variant="secondary" 
+            v-b-popover.hover="'Add an action to the test'">
+            Add Action
+        </b-button>
+
         <b-row>
             <test-action 
-                v-for="(action, index) in this.$parent.fixtureBeforeEach[0].actions" 
+                v-for="(action, index) in fixBefore.actions" 
                 :key="index" 
                 :action="action" 
                 v-on:remove-action="removeAction(index)">
@@ -49,7 +64,7 @@ export default {
         addAction(){
             var actions = this.$parent.fixtureBeforeEach[0].actions
             
-            actions.push({index: actions.length, type: '', element: '', name: '', options: ''})
+            actions.push({index: actions.length, type: null, element: null, name: null, options: null})
         }
     }
 }
@@ -57,7 +72,9 @@ export default {
 
 <style lang="scss">
     .before-each{
-        margin-top: 30px;
+        background-color: #ff000030;
+        padding-top: 20px;
+        padding-bottom: 20px;
 
         .row{
             clear: both;

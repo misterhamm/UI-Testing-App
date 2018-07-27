@@ -1,7 +1,7 @@
 <template>
-<b-row :key="'constVar-'+ constVar.index">
+<b-row>
     <b-col class="constVar">
-        <h3>Constant Veriable</h3>
+        <h3>Constant Variable</h3>
         
         <b-button 
             @click="deleteConstVar"
@@ -77,7 +77,7 @@ export default {
         addConstFunc(index){
             var funcs = this.$parent.constList[index].funcs
             
-            funcs.push({name: '', options: ''})
+            funcs.push({name: null, options: null})
         },
         removeFunc(funcIndex, index){
             var counter = 0
@@ -99,7 +99,9 @@ export default {
 <style lang="scss">
     .constVar{
         float: left;
-        margin-top: 20px;
+        background-color: #00ff0030;
+        padding-top: 20px;
+        padding-bottom: 20px;
 
         .row{
             clear: both;

@@ -1,22 +1,23 @@
 <template>
-<b-row :key="'test-' + test.index">
+<b-row>
     <b-col class="test">
         <h2>Test</h2>
         
         <b-button 
             @click="remove" 
             class="delete-test" 
-            :disabled="this.$parent.testList[test.index].actions.length > 0" 
+            :disabled="test.actions.length > 0" 
             variant="danger" size="sm">
             Delete Test
         </b-button>
-        <label>Test Name</label>
+
         <b-form-input 
             class="test-name" 
             v-model="test.name" 
             placeholder="Test name here" 
             type="text">
         </b-form-input>
+        
         <b-form-input 
             class="test-speed" 
             v-model="test.speed" 
@@ -35,7 +36,7 @@
         </b-button>
         <b-row>
             <test-action 
-                v-for="(action, index) in this.$parent.testList[test.index].actions" 
+                v-for="(action, index) in test.actions" 
                 :key="index" 
                 :action="action" 
                 v-on:remove-action="removeAction(test.index, index)">
@@ -65,7 +66,7 @@ export default {
         },
         removeAction(testIndex, index){
             var counter = 0
-            var actions = this.$parent.testList[testIndex].actions
+            var actions = this.test.actions
             
             actions.splice(index, 1)
             actions.forEach(action => {
@@ -75,9 +76,9 @@ export default {
             
         },
         addAction(testIndex){
-            var actions = this.$parent.testList[testIndex].actions
+            var actions = this.test.actions
             
-            actions.push({index: actions.length, constVar: false, type: '', element: '', name: '', options: ''})
+            actions.push({index: actions.length, constVar: false, type: null, element: null, name: null, options: null})
         }
     }
 }
@@ -85,7 +86,9 @@ export default {
 
 <style lang="scss">
     .test{
-        margin-top: 30px;
+        background-color: #00ffff30;
+        padding-top: 20px;
+        padding-bottom: 20px;
 
         .row{
             clear: both;
