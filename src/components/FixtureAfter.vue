@@ -7,7 +7,7 @@
         <b-button @click="addAction()" class="add-action" variant="secondary" v-b-popover.hover="'Add an action to the test'">Add Action</b-button>
         <b-row>
             <test-action 
-                v-for="(action, index) in this.$parent.fixtureAfterEach[0].actions" 
+                v-for="(action, index) in fixAfter.actions" 
                 :key="index" 
                 :action="action" 
                 v-on:remove-action="removeAction(index)">
@@ -22,11 +22,11 @@ import Vue from 'vue'
 import TestAction from './TestAction.vue'
 
 export default {
-    props: ['test'],
+    props: ['fixAfter'],
+    name: 'fixAfter',
     components:{
         'test-action': TestAction
     },
-    name: 'test',
     data: function(){
         return{
         }
@@ -49,7 +49,7 @@ export default {
         addAction(){
             var actions = this.$parent.fixtureAfterEach[0].actions
             
-            actions.push({index: actions.length, type: '', element: '', name: '', options: ''})
+            actions.push({index: actions.length, type: null, element: null, name: null, options: null})
         }
     }
 }
@@ -57,7 +57,9 @@ export default {
 
 <style lang="scss">
     .after-each{
-        margin-top: 30px;
+        background-color: #0026ff30;
+        padding-top: 20px;
+        padding-bottom: 20px;
 
         .row{
             clear: both;
