@@ -1,0 +1,52 @@
+@import "_variables.scss";
+
+.btn {
+  border-radius: 0;
+  padding: 10px 20px;
+
+  &:disabled {
+    background-color: $disabled;
+    border-color: $disabled;
+
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+
+  &-primary {
+    background-color: $primary;
+    border-color: $primary;
+
+    &:hover {
+      background-color: darken($primary, 10%);
+    }
+    &:focus, &:active {
+      box-shadow: none;
+    }
+  }
+
+
+}
+
+.app {
+  &-setup {
+    border-bottom: 1px solid $border;
+    padding-bottom: 40px;
+  }
+
+  .add-test {
+    margin: 30px 0;
+  }
+}
+
+.tests {
+  min-height: 300px;
+
+  .test {
+    padding: 30px 0;
+
+    &:nth-child(n+2) {
+      border-top: 1px solid $border;
+    }
+  }
+}

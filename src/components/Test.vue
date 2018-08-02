@@ -1,6 +1,6 @@
 <template>
-<b-row>
-    <b-col class="test">
+
+    <div class="test">
         <h2>Test</h2>
         <b-button @click="remove" class="delete-test" :disabled="this.$parent.testList[test.index].actions.length > 0" variant="danger" size="sm">Delete Test</b-button>
         <label>Test Name</label>
@@ -14,8 +14,8 @@
             :action="action" 
             v-on:remove-action="removeAction(test.index, index)">
         </test-action>
-    </b-col>
-</b-row>
+    </div>
+
 </template>
 
 <script>
@@ -58,23 +58,23 @@ export default {
 
 <style lang="scss">
     .test{
-        margin-top: 30px;
+        
         
         .add-action{
-            float: right;
+            // float: right;
         }
 
         .delete-test{
-            margin-left: 5%;
+            // margin-left: 5%;
         }
         label, h2{
-            float: left;
-            clear: both;
+            // float: left;
+            // clear: both;
         }
         .test-name{
-            float: left;
-            clear: both;
-            width: 80%;
+            // float: left;
+            // clear: both;
+            // width: 80%;
         }
     }
 </style>
