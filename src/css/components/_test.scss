@@ -1,0 +1,16 @@
+.test {
+  background-color: rgba($primary, 0.2);
+  box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  position: relative;
+
+  &:nth-child(n + 2) {
+    margin-top: 30px;
+  }
+
+  .delete-test {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+}
